@@ -1,0 +1,4 @@
+{
+  "endpoint-prefix": "events-upcoming",
+  "api-base-url": "https://api.smarkets.com/v3/events/"
+}
