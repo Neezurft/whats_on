@@ -17,9 +17,7 @@ app.get(`/${prefix}`, async (req, res) => {
 
   const response = await fetch(apiBaseUrl + `?state=upcoming&type=${type}`).then(res => res.json());
 
-  return res.json({
-    events: response.events
-  });
+  return res.json(response.events || []);
 });
 
 app.get(`/${prefix}/search`, (req, res) => {

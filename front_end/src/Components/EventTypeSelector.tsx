@@ -18,7 +18,8 @@ import { PlaceholderProps } from "react-select/src/components/Placeholder";
 import { SingleValueProps } from "react-select/src/components/SingleValue";
 import { ValueType } from "react-select/src/types";
 import { Omit } from "@material-ui/types";
-import { SportTypes, SportType } from "../Utils/SportTypes";
+import { SportTypes, OptionType } from "../Utils/SportTypes";
+import { IEventType } from "../../../shared/interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-function NoOptionsMessage(props: NoticeProps<SportType>) {
+function NoOptionsMessage(props: NoticeProps<OptionType>) {
   return (
     <Typography
       color="textSecondary"
@@ -91,7 +92,7 @@ function inputComponent({ inputRef, ...props }: InputComponentProps) {
   return <div ref={inputRef} {...props} />;
 }
 
-function Control(props: ControlProps<SportType>) {
+function Control(props: ControlProps<OptionType>) {
   const {
     children,
     innerProps,
@@ -116,7 +117,7 @@ function Control(props: ControlProps<SportType>) {
   );
 }
 
-function Option(props: OptionProps<SportType>) {
+function Option(props: OptionProps<OptionType>) {
   return (
     <MenuItem
       ref={props.innerRef}
@@ -132,8 +133,8 @@ function Option(props: OptionProps<SportType>) {
   );
 }
 
-type MuiPlaceholderProps = Omit<PlaceholderProps<SportType>, "innerProps"> &
-  Partial<Pick<PlaceholderProps<SportType>, "innerProps">>;
+type MuiPlaceholderProps = Omit<PlaceholderProps<OptionType>, "innerProps"> &
+  Partial<Pick<PlaceholderProps<OptionType>, "innerProps">>;
 
 function Placeholder(props: MuiPlaceholderProps) {
   const { selectProps, innerProps = {}, children } = props;
@@ -144,7 +145,7 @@ function Placeholder(props: MuiPlaceholderProps) {
   );
 }
 
-function SingleValue(props: SingleValueProps<SportType>) {
+function SingleValue(props: SingleValueProps<OptionType>) {
   return (
     <Typography className={props.selectProps.classes.singleValue} {...props.innerProps}>
       {props.children}
@@ -152,11 +153,11 @@ function SingleValue(props: SingleValueProps<SportType>) {
   );
 }
 
-function ValueContainer(props: ValueContainerProps<SportType>) {
+function ValueContainer(props: ValueContainerProps<OptionType>) {
   return <div className={props.selectProps.classes.valueContainer}>{props.children}</div>;
 }
 
-function MultiValue(props: MultiValueProps<SportType>) {
+function MultiValue(props: MultiValueProps<OptionType>) {
   return (
     <Chip
       tabIndex={-1}
@@ -170,7 +171,7 @@ function MultiValue(props: MultiValueProps<SportType>) {
   );
 }
 
-function Menu(props: MenuProps<SportType>) {
+function Menu(props: MenuProps<OptionType>) {
   return (
     <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
       {props.children}
@@ -190,16 +191,29 @@ const components = {
 };
 
 interface Props {
-  onChange: (value: ValueType<SportType>) => void;
+  onChange: (value: IEventType[] | undefined | null) => void;
 }
 
 export default function IntegrationReactSelect(props: Props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [multi, setMulti] = React.useState<ValueType<SportType>>(null);
+  const [multi, setMulti] = React.useState<ValueType<OptionType>>(null);
 
-  const handleChangeMulti = (value: ValueType<SportType>) => {
-    props.onChange(value);
+  const handleChangeMulti = (value: ValueType<OptionType>) => {
+    let events = undefined;
+
+    if (value) {
+      // not null or undefined
+      if (!(value as OptionType[]).length) {
+        // not an array, but a single object
+        // making it an array anyway for ease
+        events = [(value as OptionType).value];
+      } else {
+        events = (value as OptionType[]).map(v => v.value);
+      }
+    }
+
+    props.onChange(events);
     setMulti(value);
   };
 

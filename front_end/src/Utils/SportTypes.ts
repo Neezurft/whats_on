@@ -1,9 +1,11 @@
-export interface SportType {
+import { IEventType } from "../../../shared/interfaces";
+
+export interface OptionType {
   label: string;
-  value: string;
+  value: IEventType;
 }
 
-export const SportTypes: SportType[] = [
+export const SportTypes: OptionType[] = [
   {
     value: "american_football_match",
     label: "American Football Match"
