@@ -3,6 +3,7 @@ import "./App.scss";
 import PublicIcon from "@material-ui/icons/Public";
 import Button from "@material-ui/core/Button";
 import config from "./config.json";
+import SportTypeSelector from "./Components/Selector";
 
 const apiBaseUrl =
   process.env.NODE_ENV === "development" ? "http://localhost:4000" : config["api-base-url"];
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           </Button>
           <Test />
         </p>
+        <SportTypeSelector onChange={val => console.log(val)} />
       </header>
     </div>
   );
@@ -36,11 +38,11 @@ class Test extends React.Component<{}, State> {
   };
 
   async componentDidMount() {
-    const events = await fetch(apiBaseUrl + "/events-upcoming?type=baseball_match").then(res =>
-      res.json()
-    );
-
-    this.setState({ events });
+    // const events = await fetch(apiBaseUrl + "/events-upcoming?type=baseball_match").then(res =>
+    //   res.json()
+    // );
+    // this.setState({ events });
+    // console.log(JSON.stringify(events, null, 2));
   }
 
   render() {
