@@ -17,9 +17,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build": "react-scripts build",
+    "deploy-create": "sls deploy --nos3sync",
+    "deploy-sync": "sls deploy --bucket ${cf:${self:service}-${self:provider.stage}.StaticSiteS3BucketName.Value}",
+    "remove": "sls remove --bucket ${cf:${self:service}-${self:provider.stage}.StaticSiteS3BucketName.Value}",
+    "deploy": "npm run build && npm run deploy-create && npm run deploy-sync"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -35,5 +39,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "serverless-s3-sync": "^1.9.0"
   }
 }
