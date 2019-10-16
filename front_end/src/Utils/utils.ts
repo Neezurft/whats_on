@@ -1,4 +1,4 @@
-import { IEventType, IEvent, IAPIResponse } from "../../../shared/interfaces";
+import { IEventType, IAPIResponse } from "../../../shared/interfaces";
 import config from "../config.json";
 import { EventOptions } from "./EventOptions";
 

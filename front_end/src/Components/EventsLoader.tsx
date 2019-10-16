@@ -51,8 +51,8 @@ class EventsLoader extends React.Component<Props, State> {
         <div className={classes.selector}>
           <EventOptionSelector onChange={this.handleEventTypeChange} />
         </div>
-        <Grid container={true}>
-          <Grid xs={12}>
+        <Grid container>
+          <Grid xs={12} item>
             <div style={{ height: 10 }}>{this.pendingFetches !== 0 && <LinearProgress />}</div>
           </Grid>
           {this.state.loadedEvents.map(this.renderCard)}
@@ -87,13 +87,13 @@ class EventsLoader extends React.Component<Props, State> {
     return (
       <React.Fragment key={event.id}>
         <Hidden xsDown mdUp>
-          <Grid sm={2} />
+          <Grid xs={2} item />
         </Hidden>
-        <Grid xs={12} sm={8} md={6}>
+        <Grid key={event.id} xs={12} sm={8} md={6} item>
           <EventCard event={event} />
         </Grid>
         <Hidden xsDown mdUp>
-          <Grid sm={2} />
+          <Grid xs={2} item />
         </Hidden>
       </React.Fragment>
     );
