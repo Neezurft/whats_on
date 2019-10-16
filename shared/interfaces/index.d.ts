@@ -6,6 +6,13 @@ export interface IEvent {
   type: IEventType;
 }
 
+export interface IAPIResponse {
+  events: IEvent[];
+  pagination: {
+    next_page: string | null;
+  };
+}
+
 export type IEventType =
   | "american_football_match"
   | "american_football_outright"

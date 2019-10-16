@@ -199,11 +199,16 @@ export default function IntegrationReactSelect(props: Props) {
   const [multi, setMulti] = React.useState<ValueType<OptionType>>(null);
 
   const handleChangeMulti = (value: ValueType<OptionType>) => {
+    if (value && (value as any).length > 5) {
+      // up to 5 options can be selected
+      return;
+    }
+
     let events = undefined;
 
     if (value) {
       // not null or undefined
-      if (!(value as OptionType[]).length) {
+      if ((value as OptionType[]).length === undefined) {
         // not an array, but a single object
         // making it an array anyway for ease
         events = [(value as OptionType).value];
@@ -240,7 +245,7 @@ export default function IntegrationReactSelect(props: Props) {
               shrink: true
             }
           }}
-          placeholder="Select multiple event types"
+          placeholder="Select up to 5 event types"
           options={EventOptions}
           components={components}
           value={multi}

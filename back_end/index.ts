@@ -13,19 +13,15 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get(`/${prefix}`, async (req, res) => {
-  const { type } = req.query;
+  let query = "?";
 
-  const response = await fetch(apiBaseUrl + `?state=upcoming&type=${type}`).then(res => res.json());
+  for (const queryParamKey in req.query) {
+    query += `${queryParamKey}=${req.query[queryParamKey]}&`;
+  }
 
-  return res.json(response.events || []);
-});
+  const response = await fetch(apiBaseUrl + query).then(res => res.json());
 
-app.get(`/${prefix}/search`, (req, res) => {
-  const { term } = req.query;
-
-  return res.json({
-    message: `To be implemented... You used the term: ${term} though`
-  });
+  return res.json(response);
 });
 
 export const handler = serverless(app);

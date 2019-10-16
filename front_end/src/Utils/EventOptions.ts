@@ -39,10 +39,6 @@ export const EventOptions: OptionType[] = [
     label: "Darts Match"
   },
   {
-    value: "darts_outright",
-    label: "Darts Outright"
-  },
-  {
     value: "football_match",
     label: "Football Match"
   },
@@ -97,10 +93,6 @@ export const EventOptions: OptionType[] = [
   {
     value: "volleyball_match",
     label: "Volleyball Match"
-  },
-  {
-    value: "generic",
-    label: "Generic"
   },
   {
     value: "tv_entertainment",
