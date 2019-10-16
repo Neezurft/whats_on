@@ -20,17 +20,15 @@ export default class Timer extends React.Component<Props> {
 
   render() {
     return (
-      <div>
-        <Typography variant="subtitle2" component="p">
-          {this.getCounterDisplay()}
-        </Typography>
-      </div>
+      <Typography variant="subtitle2" component="p">
+        {this.getCounterDisplay()}
+      </Typography>
     );
   }
 
-  initialiseCounter = async () => {
+  initialiseCounter() {
     this.interval = setInterval(() => this.forceUpdate(), 1000);
-  };
+  }
 
   stopTimer() {
     if (this.interval !== null) {

@@ -20,7 +20,7 @@ export function formUrl(id: string, slug: string) {
 }
 
 export function getEventTypeLabel(type: IEventType) {
-  const eventOption = EventOptions.find(e => e.value === type)!;
+  const eventOption = EventOptions.find(e => e.value === type);
 
-  return eventOption.label;
+  return (eventOption && eventOption.label) || "";
 }

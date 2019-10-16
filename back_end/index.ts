@@ -7,9 +7,9 @@ import fetch from "node-fetch";
 import config from "./config.json";
 import serialiseResponse from "./src/serialisers/apiResponse";
 
-const app = express();
 const { "endpoint-prefix": prefix, "api-base-url": apiBaseUrl } = config;
 
+const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 

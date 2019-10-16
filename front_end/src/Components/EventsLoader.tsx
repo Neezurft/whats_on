@@ -55,28 +55,9 @@ class EventsLoader extends React.Component<Props, State> {
           <Grid xs={12}>
             <div style={{ height: 10 }}>{this.pendingFetches !== 0 && <LinearProgress />}</div>
           </Grid>
-          {this.state.loadedEvents.map(event => {
-            if (!this.state.selectedEventTypes.includes(event.type)) {
-              return null;
-            }
-            return (
-              <React.Fragment key={event.id}>
-                <Hidden xsDown mdUp>
-                  <Grid sm={2} />
-                </Hidden>
-                <Grid xs={12} sm={8} md={6}>
-                  <EventCard event={event} />
-                </Grid>
-                <Hidden xsDown mdUp>
-                  <Grid sm={2} />
-                </Hidden>
-              </React.Fragment>
-            );
-          })}
+          {this.state.loadedEvents.map(this.renderCard)}
         </Grid>
-        <div
-          style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 40 }}
-        >
+        <div className={classes.loadingContainer}>
           {this.state.loadingMore && <CircularProgress />}
           {this.state.nothingToLoad && <Typography>No more events to Load</Typography>}
         </div>
@@ -97,6 +78,26 @@ class EventsLoader extends React.Component<Props, State> {
       </div>
     );
   }
+
+  renderCard = (event: IEvent) => {
+    if (!this.state.selectedEventTypes.includes(event.type)) {
+      return null;
+    }
+
+    return (
+      <React.Fragment key={event.id}>
+        <Hidden xsDown mdUp>
+          <Grid sm={2} />
+        </Hidden>
+        <Grid xs={12} sm={8} md={6}>
+          <EventCard event={event} />
+        </Grid>
+        <Hidden xsDown mdUp>
+          <Grid sm={2} />
+        </Hidden>
+      </React.Fragment>
+    );
+  };
 
   handleEventTypeChange = (selectedEventTypes: IEventType[] | undefined | null) => {
     if (!selectedEventTypes) {
@@ -192,6 +193,12 @@ const styles = createStyles({
   },
   selector: {
     width: "100%"
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 40
   }
 });
 

@@ -1,7 +1,8 @@
 import { IAPIResponse, IEvent } from "../../../shared/interfaces";
 
 export default function(response: any): IAPIResponse {
-  const events = response && response.events && response.events.length ? response.events : [];
+  const events =
+    response && response.events && response.events.length !== undefined ? response.events : [];
 
   const serialisedResponse: IAPIResponse = {
     events: events.filter(filterInvalidEvents).map(serialiseEvent),
@@ -15,10 +16,6 @@ export default function(response: any): IAPIResponse {
 
 function serialiseEvent(eventObj: any): IEvent | undefined {
   const { id, name, full_slug, start_datetime, type } = eventObj;
-
-  if (!id || !name || !full_slug || !start_datetime || !type) {
-    return undefined;
-  }
 
   const event: IEvent = {
     id,
