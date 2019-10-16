@@ -5,6 +5,8 @@ import Grid from "@material-ui/core/Grid";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
+import Snackbar from "@material-ui/core/Snackbar";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Hidden from "@material-ui/core/Hidden";
 import { withStyles, WithStyles, createStyles } from "@material-ui/core/styles";
 import { IEvent, IEventType } from "../../../shared/interfaces";
@@ -14,9 +16,9 @@ import moment from "moment";
 interface State {
   loadedEvents: IEvent[];
   selectedEventTypes: IEventType[];
-  pendingFetches: number;
   loadingMore: boolean;
   nothingToLoad: boolean;
+  error: boolean;
 }
 
 type Props = WithStyles<typeof styles>;
@@ -25,11 +27,12 @@ class EventsLoader extends React.Component<Props, State> {
   state: State = {
     loadedEvents: [],
     selectedEventTypes: [],
-    pendingFetches: 0,
     loadingMore: false,
-    nothingToLoad: false
+    nothingToLoad: false,
+    error: false
   };
 
+  pendingFetches: number = 0;
   fecthedInfo: Array<{ eventType: IEventType; nextPageQuery: string | null }> = [];
 
   componentDidMount() {
@@ -50,9 +53,7 @@ class EventsLoader extends React.Component<Props, State> {
         </div>
         <Grid container={true}>
           <Grid xs={12}>
-            <div style={{ height: 10 }}>
-              {this.state.pendingFetches !== 0 && <LinearProgress />}
-            </div>
+            <div style={{ height: 10 }}>{this.pendingFetches !== 0 && <LinearProgress />}</div>
           </Grid>
           {this.state.loadedEvents.map(event => {
             if (!this.state.selectedEventTypes.includes(event.type)) {
@@ -79,6 +80,20 @@ class EventsLoader extends React.Component<Props, State> {
           {this.state.loadingMore && <CircularProgress />}
           {this.state.nothingToLoad && <Typography>No more events to Load</Typography>}
         </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          open={this.state.error}
+          autoHideDuration={1000}
+          onClose={() => this.setState({ error: false })}
+        >
+          <SnackbarContent
+            style={{ backgroundColor: "red" }}
+            message="Something has gone wrong, please try again!"
+          />
+        </Snackbar>
       </div>
     );
   }
@@ -93,7 +108,8 @@ class EventsLoader extends React.Component<Props, State> {
       const hasntFetchedEventType = !this.fecthedInfo.find(info => info.eventType === eventType);
 
       if (hasntFetchedEventType) {
-        this.setState({ pendingFetches: this.state.pendingFetches + 1, nothingToLoad: false });
+        this.setState({ nothingToLoad: false });
+        this.pendingFetches = this.pendingFetches + 1;
         this.loadEvents(eventType);
       }
     }
@@ -101,8 +117,10 @@ class EventsLoader extends React.Component<Props, State> {
     this.setState({ selectedEventTypes });
   };
 
-  loadEvents(eventType: IEventType) {
-    fetchEvents(eventType).then(response => {
+  async loadEvents(eventType: IEventType) {
+    try {
+      const response = await fetchEvents(eventType);
+
       const allEvents = [...this.state.loadedEvents, ...response.events];
 
       allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
@@ -112,11 +130,15 @@ class EventsLoader extends React.Component<Props, State> {
         nextPageQuery: response.pagination.next_page
       });
 
+      this.pendingFetches = this.pendingFetches - 1;
       this.setState({
-        loadedEvents: allEvents,
-        pendingFetches: this.state.pendingFetches - 1
+        loadedEvents: allEvents
       });
-    });
+    } catch {
+      // todo: can be improved, showing more meaningful errors to user
+      this.pendingFetches = this.pendingFetches - 1;
+      this.setState({ error: true });
+    }
   }
 
   async loadMoreEvents() {
@@ -130,12 +152,18 @@ class EventsLoader extends React.Component<Props, State> {
     this.setState({ loadingMore: true, nothingToLoad });
 
     let newLoadedEvents: IEvent[] = [];
+    let error = false;
 
     for (const info of this.fecthedInfo) {
       if (info.nextPageQuery) {
-        const response = await fetchMoreEvents(info.nextPageQuery);
-        newLoadedEvents = newLoadedEvents.concat(response.events);
-        info.nextPageQuery = response.pagination.next_page;
+        try {
+          const response = await fetchMoreEvents(info.nextPageQuery);
+          newLoadedEvents = newLoadedEvents.concat(response.events);
+          info.nextPageQuery = response.pagination.next_page;
+        } catch {
+          // todo: can be improved, showing more meaningful errors to user
+          error = true;
+        }
       }
     }
 
@@ -143,7 +171,7 @@ class EventsLoader extends React.Component<Props, State> {
 
     allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
 
-    this.setState({ loadedEvents: allEvents, loadingMore: false });
+    this.setState({ loadedEvents: allEvents, loadingMore: false, error });
   }
 
   listenToScroll = () => {

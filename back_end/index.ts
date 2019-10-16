@@ -20,9 +20,13 @@ app.get(`/${prefix}`, async (req, res) => {
     query += `${queryParamKey}=${req.query[queryParamKey]}&`;
   }
 
-  const response = await fetch(apiBaseUrl + query).then(res => res.json());
-
-  return res.json(serialiseResponse(response));
+  try {
+    const response = await fetch(apiBaseUrl + query).then(res => res.json());
+    return res.json(serialiseResponse(response));
+  } catch (_e) {
+    // todo: improve - this is a very basic implementation, could be improved.
+    return res.status(500).send();
+  }
 });
 
 export const handler = serverless(app);
