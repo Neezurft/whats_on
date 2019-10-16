@@ -1,19 +1,17 @@
 import React from "react";
 import "./App.scss";
-import Grid from "@material-ui/core/Grid";
+import Container from "@material-ui/core/Container";
 import EventsLoader from "./Components/EventsLoader";
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <Grid xs={12}>
+      <Container maxWidth="md">
         <header className="App-header">
           <p>Smarkets Upcoming Events</p>
         </header>
-      </Grid>
-      <Grid xs={12}>
         <EventsLoader />
-      </Grid>
+      </Container>
     </div>
   );
 };

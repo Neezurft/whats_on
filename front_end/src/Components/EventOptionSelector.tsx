@@ -18,15 +18,14 @@ import { PlaceholderProps } from "react-select/src/components/Placeholder";
 import { SingleValueProps } from "react-select/src/components/SingleValue";
 import { ValueType } from "react-select/src/types";
 import { Omit } from "@material-ui/types";
-import { SportTypes, OptionType } from "../Utils/SportTypes";
+import { EventOptions, OptionType } from "../Utils/EventOptions";
 import { IEventType } from "../../../shared/interfaces";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      height: 250,
-      minWidth: 290
+      width: "100%"
     },
     input: {
       display: "flex",
@@ -242,7 +241,7 @@ export default function IntegrationReactSelect(props: Props) {
             }
           }}
           placeholder="Select multiple event types"
-          options={SportTypes}
+          options={EventOptions}
           components={components}
           value={multi}
           onChange={handleChangeMulti}

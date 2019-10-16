@@ -2,8 +2,8 @@ export interface IEvent {
   full_slug: string;
   id: string;
   name: string;
-  start_datetime: Date;
-  type: EventType;
+  start_datetime: string;
+  type: IEventType;
 }
 
 export type IEventType =

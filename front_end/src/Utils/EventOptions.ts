@@ -5,22 +5,14 @@ export interface OptionType {
   value: IEventType;
 }
 
-export const SportTypes: OptionType[] = [
+export const EventOptions: OptionType[] = [
   {
     value: "american_football_match",
     label: "American Football Match"
   },
   {
-    value: "american_football_outright",
-    label: "American Football Outright"
-  },
-  {
     value: "baseball_match",
     label: "Baseball Match"
-  },
-  {
-    value: "baseball_outright",
-    label: "Baseball Outright"
   },
   {
     value: "basketball_match",
@@ -33,10 +25,6 @@ export const SportTypes: OptionType[] = [
   {
     value: "cricket_match",
     label: "Cricket Match"
-  },
-  {
-    value: "cricket_outright",
-    label: "Cricket Outright"
   },
   {
     value: "current_affairs",
@@ -59,16 +47,8 @@ export const SportTypes: OptionType[] = [
     label: "Football Match"
   },
   {
-    value: "football_outright",
-    label: "Football Outright"
-  },
-  {
     value: "golf_match",
     label: "Golf Match"
-  },
-  {
-    value: "golf_outright",
-    label: "Golf Outright"
   },
   {
     value: "handball_match",
@@ -84,23 +64,15 @@ export const SportTypes: OptionType[] = [
   },
   {
     value: "mma_match",
-    label: "Mma Match"
+    label: "MMA Match"
   },
   {
     value: "motorsports_race",
     label: "Motorsports Race"
   },
   {
-    value: "motorsports_outright",
-    label: "Motorsports Outright"
-  },
-  {
     value: "politics",
     label: "Politics"
-  },
-  {
-    value: "politics_outright",
-    label: "Politics Outright"
   },
   {
     value: "rowing",
@@ -111,32 +83,16 @@ export const SportTypes: OptionType[] = [
     label: "Rugby League Match"
   },
   {
-    value: "rugby_league_outright",
-    label: "Rugby League Outright"
-  },
-  {
     value: "rugby_union_match",
     label: "Rugby Union Match"
-  },
-  {
-    value: "rugby_union_outright",
-    label: "Rugby Union Outright"
   },
   {
     value: "snooker_match",
     label: "Snooker Match"
   },
   {
-    value: "snooker_outright",
-    label: "Snooker Outright"
-  },
-  {
     value: "tennis_match",
     label: "Tennis Match"
-  },
-  {
-    value: "tennis_outright",
-    label: "Tennis Outright"
   },
   {
     value: "volleyball_match",
@@ -145,10 +101,6 @@ export const SportTypes: OptionType[] = [
   {
     value: "generic",
     label: "Generic"
-  },
-  {
-    value: "top_level_event",
-    label: "Top Level Event"
   },
   {
     value: "tv_entertainment",
