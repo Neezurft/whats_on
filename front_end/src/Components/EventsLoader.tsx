@@ -180,7 +180,7 @@ class EventsLoader extends React.Component<Props, State> {
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const remainsToBeScrolled = height - winScroll;
 
-    if (remainsToBeScrolled === 0 && !this.state.loadingMore) {
+    if (remainsToBeScrolled < 100 && !this.state.loadingMore) {
       this.loadMoreEvents();
     }
   };
