@@ -5,6 +5,7 @@ import cors from "cors";
 import serverless from "serverless-http";
 import fetch from "node-fetch";
 import config from "./config.json";
+import serialiseResponse from "./src/serialisers/apiResponse";
 
 const app = express();
 const { "endpoint-prefix": prefix, "api-base-url": apiBaseUrl } = config;
@@ -21,7 +22,7 @@ app.get(`/${prefix}`, async (req, res) => {
 
   const response = await fetch(apiBaseUrl + query).then(res => res.json());
 
-  return res.json(response);
+  return res.json(serialiseResponse(response));
 });
 
 export const handler = serverless(app);
