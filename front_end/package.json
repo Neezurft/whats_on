@@ -24,7 +24,7 @@
     "eject": "react-scripts eject",
     "build": "react-scripts build",
     "deploy-create": "sls deploy --nos3sync",
-    "deploy-sync": "sls deploy --bucket ${cf:${self:service}-${self:provider.stage}.StaticSiteS3BucketName.Value}",
+    "deploy-sync": "sls deploy --bucket ${cf:${self:service}-${self:provider.stage}.StaticSiteS3BucketName.Value} -v",
     "remove": "sls remove --bucket ${cf:${self:service}-${self:provider.stage}.StaticSiteS3BucketName.Value}",
     "deploy": "npm run build && npm run deploy-create && npm run deploy-sync"
   },
