@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import EventOptionSelector from "./EventOptionSelector";
-import EventCard from "./EventCard";
+import CardWrapper from "./CardWrapper";
 import Grid from "@material-ui/core/Grid";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import Hidden from "@material-ui/core/Hidden";
 import { makeStyles } from "@material-ui/core/styles";
 import { IEvent, IEventType } from "../../../shared/interfaces";
 import { fetchEvents, fetchMoreEvents } from "../Utils/utils";
@@ -147,26 +146,6 @@ export default () => {
         />
       </Snackbar>
     </div>
-  );
-};
-
-const CardWrapper = ({ event, hide }: { event: IEvent; hide: boolean }) => {
-  if (hide) {
-    return null;
-  }
-
-  return (
-    <React.Fragment key={event.id}>
-      <Hidden xsDown mdUp>
-        <Grid xs={2} item />
-      </Hidden>
-      <Grid key={event.id} xs={12} sm={8} md={6} item>
-        <EventCard event={event} />
-      </Grid>
-      <Hidden xsDown mdUp>
-        <Grid xs={2} item />
-      </Hidden>
-    </React.Fragment>
   );
 };
 
