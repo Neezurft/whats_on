@@ -34,7 +34,7 @@ export default ({ startTime, onTimerStop }: Props) => {
         clearInterval(interval);
       }
     };
-  }, [startTime]);
+  }, [startTime, onTimerStop]);
 
   return (
     <Typography variant="subtitle2" component="p">
