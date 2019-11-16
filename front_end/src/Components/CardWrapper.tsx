@@ -10,11 +10,11 @@ const CardWrapper = ({ event, hide }: { event: IEvent; hide: boolean }) => {
   }
 
   return (
-    <React.Fragment key={event.id}>
+    <React.Fragment>
       <Hidden xsDown mdUp>
         <Grid xs={2} item />
       </Hidden>
-      <Grid key={event.id} xs={12} sm={8} md={6} item>
+      <Grid xs={12} sm={8} md={6} item>
         <EventCard event={event} />
       </Grid>
       <Hidden xsDown mdUp>

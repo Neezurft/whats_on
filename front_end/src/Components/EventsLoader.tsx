@@ -124,7 +124,11 @@ export default () => {
           <div style={{ height: 10 }}>{pendingFetches !== 0 && <LinearProgress />}</div>
         </Grid>
         {loadedEvents.map(event => (
-          <CardWrapper event={event} hide={!selectedEventTypes.includes(event.type)} />
+          <CardWrapper
+            key={event.id}
+            event={event}
+            hide={!selectedEventTypes.includes(event.type)}
+          />
         ))}
       </Grid>
       <div className={classes.loadingContainer}>
