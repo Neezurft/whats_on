@@ -10,10 +10,12 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { IEvent, IEventType } from "../../../shared/interfaces";
 import { fetchEvents, fetchMoreEvents } from "../Utils/utils";
-import moment from "moment";
+import { useStores } from "../State";
+import { observer } from "mobx-react";
 
-export default () => {
-  const [loadedEvents, setLoadedEvents] = useState<IEvent[]>([]);
+const EventsLoader = () => {
+  const { eventsStore } = useStores();
+
   const [selectedEventTypes, setSelectedEventTypes] = useState<IEventType[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [nothingToLoad, setNothingToLoad] = useState(false);
@@ -50,9 +52,7 @@ export default () => {
         }
       }
 
-      const allEvents = [...loadedEvents, ...newLoadedEvents];
-      allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
-      setLoadedEvents(allEvents);
+      eventsStore.setEvents(newLoadedEvents);
       setLoadingMore(false);
       setError(error);
     };
@@ -68,7 +68,7 @@ export default () => {
 
     window.addEventListener("scroll", listenToScroll);
     return () => window.removeEventListener("scroll", listenToScroll);
-  }, [loadingMore, loadedEvents]);
+  }, [loadingMore, eventsStore]);
 
   const classes = useStyles();
 
@@ -96,17 +96,13 @@ export default () => {
     try {
       const response = await fetchEvents(eventType);
 
-      const allEvents = [...loadedEvents, ...response.events];
-
-      allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
-
       fetchedInfo.current.push({
         eventType,
         nextPageQuery: response.pagination.next_page
       });
 
       setPendingFetches(p => p - 1);
-      setLoadedEvents(allEvents);
+      eventsStore.setEvents(response.events);
     } catch {
       // todo: can be improved, showing more meaningful errors to user
       setPendingFetches(p => p - 1);
@@ -123,12 +119,8 @@ export default () => {
         <Grid xs={12} item>
           <div style={{ height: 10 }}>{pendingFetches !== 0 && <LinearProgress />}</div>
         </Grid>
-        {loadedEvents.map(event => (
-          <CardWrapper
-            key={event.id}
-            event={event}
-            hide={!selectedEventTypes.includes(event.type)}
-          />
+        {eventsStore.events.map(event => (
+          <CardWrapper key={event.id} event={event} hide={!selectedEventTypes.includes(event.type)} />
         ))}
       </Grid>
       <div className={classes.loadingContainer}>
@@ -144,10 +136,7 @@ export default () => {
         autoHideDuration={1000}
         onClose={() => setError(false)}
       >
-        <SnackbarContent
-          style={{ backgroundColor: "red" }}
-          message="Something has gone wrong, please try again!"
-        />
+        <SnackbarContent style={{ backgroundColor: "red" }} message="Something has gone wrong, please try again!" />
       </Snackbar>
     </div>
   );
@@ -168,3 +157,5 @@ const useStyles = makeStyles({
     height: 40
   }
 });
+
+export default observer(EventsLoader);
