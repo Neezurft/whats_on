@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Dispatch } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import EventOptionSelector from "./EventOptionSelector";
 import CardWrapper from "./CardWrapper";
 import Grid from "@material-ui/core/Grid";
@@ -10,21 +11,30 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import { makeStyles } from "@material-ui/core/styles";
 import { IEvent, IEventType } from "../../../shared/interfaces";
 import { fetchEvents, fetchMoreEvents } from "../Utils/utils";
-import moment from "moment";
+import { StoreState, Action } from "../State/index";
+import { ThunkDispatch } from "redux-thunk";
 
 export default () => {
-  const [loadedEvents, setLoadedEvents] = useState<IEvent[]>([]);
-  const [selectedEventTypes, setSelectedEventTypes] = useState<IEventType[]>([]);
+  const dispatch = useDispatch<ThunkDispatch<StoreState, void, Action>>();
+  const loadedEvents = useSelector<StoreState, IEvent[]>(state => state.events);
+
+  const [selectedEventTypes, setSelectedEventTypes] = useState<IEventType[]>(
+    []
+  );
   const [loadingMore, setLoadingMore] = useState(false);
   const [nothingToLoad, setNothingToLoad] = useState(false);
   const [error, setError] = useState(false);
   const [pendingFetches, setPendingFetches] = useState(0);
 
-  const fetchedInfo = useRef<Array<{ eventType: IEventType; nextPageQuery: string | null }>>([]);
+  const fetchedInfo = useRef<
+    Array<{ eventType: IEventType; nextPageQuery: string | null }>
+  >([]);
 
   useEffect(() => {
     const loadMoreEvents = async () => {
-      const nothingToLoad = !fetchedInfo.current.find(info => info.nextPageQuery !== null);
+      const nothingToLoad = !fetchedInfo.current.find(
+        info => info.nextPageQuery !== null
+      );
 
       if (nothingToLoad) {
         setNothingToLoad(true);
@@ -49,17 +59,20 @@ export default () => {
           }
         }
       }
-
-      const allEvents = [...loadedEvents, ...newLoadedEvents];
-      allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
-      setLoadedEvents(allEvents);
+      dispatch({
+        type: "ADD_FETCHED_EVENTS",
+        newEvents: newLoadedEvents
+      });
       setLoadingMore(false);
       setError(error);
     };
 
     const listenToScroll = () => {
-      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const winScroll =
+        document.body.scrollTop || document.documentElement.scrollTop;
+      const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
       const remainsToBeScrolled = height - winScroll;
       if (remainsToBeScrolled < 100 && !loadingMore) {
         loadMoreEvents();
@@ -68,11 +81,13 @@ export default () => {
 
     window.addEventListener("scroll", listenToScroll);
     return () => window.removeEventListener("scroll", listenToScroll);
-  }, [loadingMore, loadedEvents]);
+  }, [loadingMore, loadedEvents, dispatch]);
 
   const classes = useStyles();
 
-  const handleEventTypeChange = (selectedEventTypes: IEventType[] | undefined | null) => {
+  const handleEventTypeChange = (
+    selectedEventTypes: IEventType[] | undefined | null
+  ) => {
     if (!selectedEventTypes) {
       setSelectedEventTypes([]);
       setNothingToLoad(false);
@@ -80,7 +95,9 @@ export default () => {
     }
 
     for (const eventType of selectedEventTypes) {
-      const hasntFetchedEventType = !fetchedInfo.current.find(info => info.eventType === eventType);
+      const hasntFetchedEventType = !fetchedInfo.current.find(
+        info => info.eventType === eventType
+      );
 
       if (hasntFetchedEventType) {
         setNothingToLoad(false);
@@ -96,17 +113,17 @@ export default () => {
     try {
       const response = await fetchEvents(eventType);
 
-      const allEvents = [...loadedEvents, ...response.events];
-
-      allEvents.sort((a, b) => moment(a.start_datetime).diff(moment(b.start_datetime)));
-
       fetchedInfo.current.push({
         eventType,
         nextPageQuery: response.pagination.next_page
       });
 
       setPendingFetches(p => p - 1);
-      setLoadedEvents(allEvents);
+
+      dispatch({
+        type: "ADD_FETCHED_EVENTS",
+        newEvents: response.events
+      });
     } catch {
       // todo: can be improved, showing more meaningful errors to user
       setPendingFetches(p => p - 1);
@@ -121,7 +138,9 @@ export default () => {
       </div>
       <Grid container>
         <Grid xs={12} item>
-          <div style={{ height: 10 }}>{pendingFetches !== 0 && <LinearProgress />}</div>
+          <div style={{ height: 10 }}>
+            {pendingFetches !== 0 && <LinearProgress />}
+          </div>
         </Grid>
         {loadedEvents.map(event => (
           <CardWrapper

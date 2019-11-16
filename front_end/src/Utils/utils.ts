@@ -24,3 +24,5 @@ export function getEventTypeLabel(type: IEventType) {
 
   return (eventOption && eventOption.label) || "";
 }
+
+export const tuple = <T extends string>(...args: T[]) => [...args];
